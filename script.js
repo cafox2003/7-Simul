@@ -8,7 +8,9 @@ let enteredscramble = "";
 let pinpositions = ["UR", "UL", "DR", "DL", "UR DR DL UL", "UR DR DL", "UR DR UL", "UR DL UL", "DR DL UL", "DR UL", "UR DL", "UR DR", "DL UL", "UR UL", "DR DL", ""]
 let l = ["L","A","B","C","D","E","F","G","H","I","J","K"];
 let executionMode = false
+let executeOnBlack = false
 document.querySelector("#executionTrainer").checked=false
+document.querySelector("#executionOnBlack").checked=false
 
 document.querySelector("#mobileInput").style.display = "none"
 let details = navigator.userAgent;
@@ -83,6 +85,39 @@ function flip() {
   }
   renderScramble();
 }
+
+function swapSides(state) {
+  const stateBackup = [...state]
+
+  function invertClock(value) {
+    if (value >= 0 && value <= 12 ) {
+      return (12 - value) % 12
+    }
+    else {
+      console.log("Unexpected value: ", value)
+    }
+  }
+  
+  //X rotation
+  state[0] = invertClock(stateBackup[6])
+  state[2] = invertClock(stateBackup[8])
+  state[6] = invertClock(stateBackup[0])
+  state[8] = invertClock(stateBackup[2])
+
+  state[1] = stateBackup[9]
+  state[3] = stateBackup[10]
+  state[4] = stateBackup[11]
+  state[5] = stateBackup[12]
+  state[7] = stateBackup[13]
+
+  state[9] = stateBackup[1]
+  state[10] = stateBackup[3]
+  state[11] = stateBackup[4]
+  state[12] = stateBackup[5]
+  state[13] = stateBackup[7]
+}
+
+
 
 function renderScramble() {
   if(side=="white"){
@@ -308,7 +343,11 @@ document.querySelector('#enterscramble').addEventListener("click", function() {
   document.querySelector('#enterscramble').blur()
   enteredscramble = prompt("enter scramble:")
   random = scrambleconvert(enteredscramble)
-  console.log(random);
+
+  if (executeOnBlack == true) {
+    swapSides(random)
+  }
+
   if (executionMode == false){
     document.querySelector("#memo").innerText="memo: ";
   }
@@ -332,6 +371,11 @@ document.querySelector('#enterscramble').addEventListener("click", function() {
     }
     document.querySelector("#memo").innerText=realMemo;
   }
+
+  if (executeOnBlack == true) {
+    swapSides(random)
+  }
+
   renderScramble(); 
   document.querySelector("#scramblebox").innerText = enteredscramble;
 });
@@ -368,15 +412,30 @@ document.querySelector("#executionTrainer").addEventListener("click", function()
   }
 });
 
+document.querySelector("#executionOnBlack").addEventListener("click", function() {
+  if (document.querySelector("#executionOnBlack").checked) {
+    executeOnBlack=true
+  }
+  else{
+    executeOnBlack=false
+  }
+});
+
 function generateScramble() {
   resetTimer();
   startTimer();
 
   scrambletext = `UR${formatScramble(Math.floor(Math.random() * 12)-5)} DR${formatScramble(Math.floor(Math.random() * 12)-5)} DL${formatScramble(Math.floor(Math.random() * 12)-5)} UL${formatScramble(Math.floor(Math.random() * 12)-5)} U${formatScramble(Math.floor(Math.random() * 12)-5)} R${formatScramble(Math.floor(Math.random() * 12)-5)} D${formatScramble(Math.floor(Math.random() * 12)-5)} L${formatScramble(Math.floor(Math.random() * 12)-5)} ALL${formatScramble(Math.floor(Math.random() * 12)-5)} y2 U${formatScramble(Math.floor(Math.random() * 12)-5)} R${formatScramble(Math.floor(Math.random() * 12)-5)} D${formatScramble(Math.floor(Math.random() * 12)-5)} L${formatScramble(Math.floor(Math.random() * 12)-5)} ALL${formatScramble(Math.floor(Math.random() * 12)-5)} ${pinpositions[Math.floor(Math.random() * 16)]}`
   random = scrambleconvert(scrambletext);
+
+  if (executeOnBlack == true) {
+    swapSides(random)
+  }
+
   console.log(random);
   document.querySelector("#scramblebox").innerText = scrambletext;
   memo="";
+  
   if (executionMode == false){
     document.querySelector("#memo").innerText="memo: ";
   }
@@ -400,6 +459,11 @@ function generateScramble() {
     }
     document.querySelector("#memo").innerText=realMemo;
   }
+
+  if (executeOnBlack == true) {
+    swapSides(random)
+  }
+
   renderScramble();
 }
 
