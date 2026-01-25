@@ -363,6 +363,16 @@ function scrambleconvert(s) {
   return n.map(num => (num+144) % 12);
 }
 
+
+document.querySelector("#copyScramble").addEventListener("click", async () => {
+  const el = document.querySelector("#scramblebox");
+
+  await navigator.clipboard.writeText(el.innerText);
+
+  el.classList.add("highlight");
+  setTimeout(() => el.classList.remove("highlight"), 600);
+});
+
 document.querySelector('#enterscramble').addEventListener("click", function() {
   document.querySelector('#enterscramble').blur()
   enteredscramble = prompt("enter scramble:")
