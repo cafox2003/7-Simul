@@ -9,8 +9,10 @@ let pinpositions = ["UR", "UL", "DR", "DL", "UR DR DL UL", "UR DR DL", "UR DR UL
 let l = ["L","A","B","C","D","E","F","G","H","I","J","K"];
 let executionMode = false
 let executeOnBlack = false
+let swapRPair = true
 document.querySelector("#executionTrainer").checked=false
 document.querySelector("#executionOnBlack").checked=false
+document.querySelector("#swapRPair").checked=true
 
 document.querySelector("#mobileInput").style.display = "none"
 let details = navigator.userAgent;
@@ -246,11 +248,18 @@ function generateMemo(state) {
         c+=state[z]*matrices[order[2]][order[1].indexOf(i)*2][z]
         c2+=state[z]*matrices[order[2]][order[1].indexOf(i)*2+1][z]
       }
-      if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
-        newRealMemo += l[(c+144)%12] + l[(c2+144)%12] + " ";
+
+      const newPair = l[(c2+144)%12] + l[(c+144)%12] + " ";
+      const newPairReverse = l[(c+144)%12] + l[(c2+144)%12] + " ";
+
+      if (swapRPair && i == "R") {
+        newRealMemo += newPairReverse;
+      }
+      else if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
+        newRealMemo += newPairReverse;
       }
       else{
-        newRealMemo += l[(c2+144)%12] + l[(c+144)%12] + " ";
+        newRealMemo += newPair;
       }
     }
   }
@@ -433,6 +442,15 @@ document.querySelector("#executionOnBlack").addEventListener("click", function()
   }
   else{
     executeOnBlack=false
+  }
+});
+
+document.querySelector("#swapRPair").addEventListener("click", function() {
+  if (document.querySelector("#swapRPair").checked) {
+    swapRPair=true
+  }
+  else{
+    swapRPair=false
   }
 });
 
