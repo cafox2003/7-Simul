@@ -46,6 +46,12 @@ document.addEventListener("keydown", function onEvent(event) {
   else if(event.key === "Enter" && executionMode==false){
     checkMemo();
   }
+  else if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === "c") {
+    copyScramble();
+  }
+  else if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === "e") {
+    enterScramble();
+  }
   else{
     if(((event.key.charCodeAt(0)>=97 && event.key.charCodeAt(0) <= 108) || (event.key.charCodeAt(0)>=48 && event.key.charCodeAt(0) <= 57)) && executionMode==false){
       if(memo.length<20){
@@ -59,6 +65,23 @@ document.addEventListener("keydown", function onEvent(event) {
   }  
   
 });
+
+async function copyScramble() {
+  const el = document.querySelector("#scramblebox");
+
+  await navigator.clipboard.writeText(el.innerText);
+
+  el.classList.add("highlight");
+  setTimeout(() => el.classList.remove("highlight"), 600);
+}
+
+
+function enterScramble() {
+  document.querySelector('#enterscramble').blur()
+  enteredscramble = prompt("enter scramble:")
+
+  applyScramble(enteredscramble)
+}
 
 function formatScramble(num) {
   if (num < 0) {
@@ -363,22 +386,13 @@ function scrambleconvert(s) {
   return n.map(num => (num+144) % 12);
 }
 
+document.querySelector("#scrambleButton").addEventListener("click", generateScramble);
 
 document.querySelector("#copyScramble").addEventListener("click", async () => {
-  const el = document.querySelector("#scramblebox");
-
-  await navigator.clipboard.writeText(el.innerText);
-
-  el.classList.add("highlight");
-  setTimeout(() => el.classList.remove("highlight"), 600);
+  await copyScramble();
 });
 
-document.querySelector('#enterscramble').addEventListener("click", function() {
-  document.querySelector('#enterscramble').blur()
-  enteredscramble = prompt("enter scramble:")
-
-  applyScramble(enteredscramble)
-});
+document.querySelector('#enterscramble').addEventListener("click", enterScramble);
 
 document.querySelector('#change').addEventListener("click",  function() {
   document.querySelector('#change').blur()
