@@ -68,6 +68,14 @@ function formatScramble(num) {
   }
 }
 
+function getFormattedNum() {
+  return formatScramble(Math.floor(Math.random() * 12)-5)
+}
+
+function generateScrambleText() {
+  return `UR${getFormattedNum()} DR${getFormattedNum()} DL${getFormattedNum()} UL${getFormattedNum()} U${getFormattedNum()} R${getFormattedNum()} D${getFormattedNum()} L${getFormattedNum()} ALL${getFormattedNum()} y2 U${getFormattedNum()} R${getFormattedNum()} D${getFormattedNum()} L${getFormattedNum()} ALL${getFormattedNum()} ${pinpositions[Math.floor(Math.random() * 16)]}`
+}
+
 function flip() {
   if(side=='white'){
     side='black';
@@ -185,23 +193,16 @@ function checkPinOrder(input) {
 }
 
 function checkMemo() {
-  let realMemo = "";
-  for(let i of order[0]){
-    if(document.getElementById(i).checked){
-      let c=0;
-      let c2=0;
-      for(let z=0; z<14; z++){
-        c+=random[z]*matrices[order[2]][order[1].indexOf(i)*2][z]
-        c2+=random[z]*matrices[order[2]][order[1].indexOf(i)*2+1][z]
-      }
-      if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
-        realMemo += l[(c+144)%12] + l[(c2+144)%12] + " ";
-      }
-      else{
-        realMemo += l[(c2+144)%12] + l[(c+144)%12] + " ";
-      }
-    }
+  if (executeOnBlack) {
+    swapSides(random)
   }
+
+  let realMemo = generateMemo(random);
+
+  if (executeOnBlack) {
+    swapSides(random)
+  }
+
   if(memo==realMemo){
     alert("correct!")
   }
@@ -209,6 +210,29 @@ function checkMemo() {
     alert(`Your memo: ${memo.toUpperCase()}\nCorrect memo: ${realMemo}`);
   }
   stopTimer()
+}
+
+function generateMemo(state) {
+  let newRealMemo = "";
+
+  for(let i of order[0]){
+    if(document.getElementById(i).checked){
+      let c=0;
+      let c2=0;
+      for(let z=0; z<14; z++){
+        c+=state[z]*matrices[order[2]][order[1].indexOf(i)*2][z]
+        c2+=state[z]*matrices[order[2]][order[1].indexOf(i)*2+1][z]
+      }
+      if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
+        newRealMemo += l[(c+144)%12] + l[(c2+144)%12] + " ";
+      }
+      else{
+        newRealMemo += l[(c2+144)%12] + l[(c+144)%12] + " ";
+      }
+    }
+  }
+
+  return newRealMemo
 }
 
 function scrambleconvert(s) {
@@ -342,43 +366,10 @@ function scrambleconvert(s) {
 document.querySelector('#enterscramble').addEventListener("click", function() {
   document.querySelector('#enterscramble').blur()
   enteredscramble = prompt("enter scramble:")
-  random = scrambleconvert(enteredscramble)
 
-  if (executeOnBlack == true) {
-    swapSides(random)
-  }
-
-  if (executionMode == false){
-    document.querySelector("#memo").innerText="memo: ";
-  }
-  else{
-    let realMemo = "";
-    for(let i of order[0]){
-      if(document.getElementById(i).checked){
-        let c=0;
-        let c2=0;
-        for(let z=0; z<14; z++){
-          c+=random[z]*matrices[order[2]][order[1].indexOf(i)*2][z]
-          c2+=random[z]*matrices[order[2]][order[1].indexOf(i)*2+1][z]
-        }
-        if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
-          realMemo += l[(c+144)%12] + l[(c2+144)%12] + " ";
-        }
-        else{
-          realMemo += l[(c2+144)%12] + l[(c+144)%12] + " ";
-        }
-      }
-    }
-    document.querySelector("#memo").innerText=realMemo;
-  }
-
-  if (executeOnBlack == true) {
-    swapSides(random)
-  }
-
-  renderScramble(); 
-  document.querySelector("#scramblebox").innerText = enteredscramble;
+  applyScramble(enteredscramble)
 });
+
 document.querySelector('#change').addEventListener("click",  function() {
   document.querySelector('#change').blur()
   changePinOrder();
@@ -425,42 +416,30 @@ function generateScramble() {
   resetTimer();
   startTimer();
 
-  scrambletext = `UR${formatScramble(Math.floor(Math.random() * 12)-5)} DR${formatScramble(Math.floor(Math.random() * 12)-5)} DL${formatScramble(Math.floor(Math.random() * 12)-5)} UL${formatScramble(Math.floor(Math.random() * 12)-5)} U${formatScramble(Math.floor(Math.random() * 12)-5)} R${formatScramble(Math.floor(Math.random() * 12)-5)} D${formatScramble(Math.floor(Math.random() * 12)-5)} L${formatScramble(Math.floor(Math.random() * 12)-5)} ALL${formatScramble(Math.floor(Math.random() * 12)-5)} y2 U${formatScramble(Math.floor(Math.random() * 12)-5)} R${formatScramble(Math.floor(Math.random() * 12)-5)} D${formatScramble(Math.floor(Math.random() * 12)-5)} L${formatScramble(Math.floor(Math.random() * 12)-5)} ALL${formatScramble(Math.floor(Math.random() * 12)-5)} ${pinpositions[Math.floor(Math.random() * 16)]}`
-  random = scrambleconvert(scrambletext);
+  scrambletext = generateScrambleText()
 
-  if (executeOnBlack == true) {
+  applyScramble(scrambletext)
+}
+
+function applyScramble(scrambleText) {
+  random = scrambleconvert(scrambleText);
+
+  document.querySelector("#scramblebox").innerText = scrambleText;
+  memo="";
+
+  if (executeOnBlack) {
     swapSides(random)
   }
 
-  console.log(random);
-  document.querySelector("#scramblebox").innerText = scrambletext;
-  memo="";
-  
   if (executionMode == false){
     document.querySelector("#memo").innerText="memo: ";
   }
   else{
-    let realMemo = "";
-    for(let i of order[0]){
-      if(document.getElementById(i).checked){
-        let c=0;
-        let c2=0;
-        for(let z=0; z<14; z++){
-          c+=random[z]*matrices[order[2]][order[1].indexOf(i)*2][z]
-          c2+=random[z]*matrices[order[2]][order[1].indexOf(i)*2+1][z]
-        }
-        if(["ur","dr","UL","DL","L","\\"].includes(i) || (i=="U" && document.querySelector("#umove").value=="left") || (i=="D" && document.querySelector("#dmove").value=="left")){
-          realMemo += l[(c+144)%12] + l[(c2+144)%12] + " ";
-        }
-        else{
-          realMemo += l[(c2+144)%12] + l[(c+144)%12] + " ";
-        }
-      }
-    }
+    let realMemo = generateMemo(random);
     document.querySelector("#memo").innerText=realMemo;
   }
 
-  if (executeOnBlack == true) {
+  if (executeOnBlack) {
     swapSides(random)
   }
 
