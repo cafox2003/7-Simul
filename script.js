@@ -7,12 +7,9 @@ let realMemo = "";
 let enteredscramble = "";
 let pinpositions = ["UR", "UL", "DR", "DL", "UR DR DL UL", "UR DR DL", "UR DR UL", "UR DL UL", "DR DL UL", "DR UL", "UR DL", "UR DR", "DL UL", "UR UL", "DR DL", ""]
 let l = ["L","A","B","C","D","E","F","G","H","I","J","K"];
-let executionMode = false
-let executeOnBlack = false
-let swapRPair = true
-document.querySelector("#executionTrainer").checked=false
-document.querySelector("#executionOnBlack").checked=false
-document.querySelector("#swapRPair").checked=true
+let executionMode = document.querySelector("#executionTrainer").checked
+let executeOnBlack = document.querySelector("#executionOnBlack").checked
+let swapRPair = document.querySelector("#swapRPair").checked
 
 document.querySelector("#mobileInput").style.display = "none"
 let details = navigator.userAgent;
