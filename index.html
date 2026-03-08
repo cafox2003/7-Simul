@@ -30,10 +30,13 @@
   <input id="mobileInput" placeholder="Enter memo here"></input>
   <h1 id="memo">memo:</h1>
   <div id="underScramble">
-    <h2 id="scramble"><span id="scramblebox">press s or click here to scramble</span></h2>
+    <h2 id="scramble"><span id="scramblebox">click here to scramble</span></h2>
     <h1 id="timer"></h1>
-    <br><button id="enterscramble">enter scramble</button>
-    <p id="info"><b>info:</b><br><span id="bigText">To use, enter your memo as if you were to start execution with the white dials facing you. This means that if you are using the order shown in Tommy and Caleb's videos, you must do an x2 and start memo on the black dials.</span><br>memo 1-12 as A-L<br><b>controls:</b><br>s: scramble<br>space: x2<br>enter: check memo</p>
+    <br>
+    <button id="scrambleButton">next scramble</button>
+    <button id="enterscramble">enter scramble</button>
+    <button id="copyScramble">copy scramble</button>
+    <p id="info"><b>info:</b><br><span id="bigText">To use, enter your memo as if you were to start execution with the white dials facing you.</span><br><span id="bigText">If you would rather start memo on the front and start execution an x2 away (which is how it is shown in Tommy's video) enable "execute on black" in settings.</span><br>memo 1-12 as A-L<br><b>controls:</b><br>s: next scramble<br>ctrl + alt + e: enter scramble<br>ctrl + alt + c: copy scramble<br>space: x2<br>enter: check memo</p>
     <button onclick="toggleVisibility()">more settings</button>
     <div id="hiddenSettings">
       <b>memo input type:</b>
@@ -44,8 +47,12 @@
       <i>if you want the option for just numbers 1-12 lmk, but for now I won't add it because since 11 and 12 are two digits I'd have to rework how the memo is entered</i><br>
       <input type="checkbox" value="executionTrainer" id="executionTrainer">
       <label for="executionTrainer"><b>execution trainer mode:</b> when checked the memo will be automatically given so you can practice execution.</label><br>
+      <input type="checkbox" value="executionOnBlack" id="executionOnBlack">
+      <label for="executionOnBlack"><b>execute on black:</b> when checked memo should be started from white, and execution should happen on black</label><br>
       <input type="checkbox" value="timerButton" id="timerButton">
-      <label for="timerButton"><b>timer:</b> when checked your memo will be timed.</label><br><br>
+      <label for="timerButton"><b>timer:</b> when checked your memo will be timed.</label><br>
+      <input type="checkbox" value="swapRPair" id="swapRPair">
+      <label for="swapRPair"><b>swap R pair:</b> when checked the letters of the R pair (second by default) will swapped. Uncheck this if you're using the order shown in Caleb's video, keep it checked if you're using the order shown in Tommy's video.</label><br>
     </div>
   </div>
   <div id="clock">    
