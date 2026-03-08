@@ -9,10 +9,10 @@ let pinpositions = ["UR", "UL", "DR", "DL", "UR DR DL UL", "UR DR DL", "UR DR UL
 let l = ["L","A","B","C","D","E","F","G","H","I","J","K"];
 let executionMode = false
 let executeOnBlack = false
-let swapRPair = true
+let swapRPair = false
 document.querySelector("#executionTrainer").checked=false
 document.querySelector("#executionOnBlack").checked=false
-document.querySelector("#swapRPair").checked=true
+document.querySelector("#swapRPair").checked=false
 
 document.querySelector("#mobileInput").style.display = "none"
 let details = navigator.userAgent;
