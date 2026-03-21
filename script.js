@@ -503,10 +503,10 @@ document.querySelector("#clock").addEventListener("click", function() {
 // show the timer when checkbox is clicked
 document.querySelector("#timerButton").addEventListener("click", function() {
   if (document.querySelector("#timerButton").checked) {
-    document.querySelector("#timer").style.display = "block";
+    document.querySelector("#timer").style.visibility = "visible";
   }
   else{
-    document.querySelector("#timer").style.display = "none";
+    document.querySelector("#timer").style.visibility = "hidden";
   }
   syncSettingsUrl();
 });
